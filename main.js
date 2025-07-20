@@ -404,6 +404,20 @@ function calculateBalance() {
     totalMonthHoursTitle.innerHTML = `<span aria-hidden="true">🗓️</span> Horas para <span id="monthNameTitle">${getMonthName(month)}</span> <span id="yearTitle">${year}</span>`;
   }
   
+  // Guardar datos del cálculo para compartir
+  window.lastCalculationData = {
+    year: year,
+    month: month,
+    monthName: getMonthName(month),
+    assignedHours: assignedHours,
+    totalMonthHours: totalMonthHoursValue,
+    hoursSoFar: hoursSoFarValue,
+    workdays: workdays,
+    offDays: offDays,
+    balance: balance,
+    offdayHours: offdayHours
+  };
+  
   console.log('✅ Cálculo completado y UI actualizada');
 }
 
