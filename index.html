@@ -13,7 +13,7 @@
     
     <!-- Preload recursos críticos -->
     <link rel="preload" href="css/sheet.css" as="style" />
-    <link rel="preload" href="main.js?v=6.5" as="script" />
+    <link rel="preload" href="main.js?v=6.8" as="script" />
     
     <!-- Favicons -->
     <link rel="icon" type="image/svg+xml" href="favicons/favicon.svg" />
@@ -30,7 +30,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slim-select@2.8.0/dist/slimselect.min.css" />
     
     <!-- Script principal -->
-    <script src="main.js?v=6.5"></script>
+    <script src="main.js?v=6.8"></script>
     
     <!-- Limpiar caché y forzar recarga -->
     <script>
@@ -45,8 +45,8 @@
       
       // Forzar recarga si se detecta versión antigua
       if (typeof window.appVersion === 'undefined') {
-        window.appVersion = '6.5';
-      } else if (window.appVersion !== '6.5') {
+        window.appVersion = '6.8';
+      } else if (window.appVersion !== '6.8') {
         console.log('Detectada versión antigua, recargando...');
         window.location.reload(true);
       }
@@ -74,6 +74,9 @@
       
       <!-- Cabecera principal -->
       <header class="header" role="banner">
+        <button class="theme-toggle" id="themeToggle" aria-label="Cambiar tema" title="Cambiar entre tema claro y oscuro">
+          <span id="themeIcon">🌙</span>
+        </button>
         <h1>🕒 Calculadora de Horas de Servicio</h1>
         <p>Calcula el balance de horas mensuales según tu plan de trabajo</p>
       </header>

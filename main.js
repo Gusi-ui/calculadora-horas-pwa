@@ -1,5 +1,5 @@
 // --- CONFIGURACIÓN ---
-const APP_VERSION = '6.5';
+const APP_VERSION = '6.8';
 window.appVersion = APP_VERSION;
 
 const MATARO_HOLIDAYS_URL =
@@ -17,6 +17,8 @@ let holidayListEl, addHolidayForm, customHolidayDate, customHolidayName;
 let holidayListContainer, toggleHolidayListBtn, festivoHoursGroup, festivoHoursInput;
 // Nuevos elementos para compartir
 let shareWhatsAppBtn, shareEmailBtn, addToCalendarBtn;
+// Elementos para el tema
+let themeToggle, themeIcon;
 
 // --- NUEVO: DÍAS DE LA SEMANA ---
 const weekdayIds = [
@@ -76,6 +78,10 @@ function initializeDOMElements() {
   shareWhatsAppBtn = document.getElementById('shareWhatsAppBtn');
   shareEmailBtn = document.getElementById('shareEmailBtn');
   addToCalendarBtn = document.getElementById('addToCalendarBtn');
+  
+  // Elementos para el tema
+  themeToggle = document.getElementById('themeToggle');
+  themeIcon = document.getElementById('themeIcon');
   
   // Inicializar días de la semana
   weekdayIds.forEach(weekday => {
@@ -540,6 +546,36 @@ function updateAriaAttributes() {
   }
 }
 
+// --- FUNCIONES PARA EL TEMA ---
+function initializeTheme() {
+  // Cargar tema guardado o usar preferencia del sistema
+  const savedTheme = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  
+  if (savedTheme) {
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+  } else if (prefersDark) {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    updateThemeIcon('dark');
+  }
+}
+
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+  updateThemeIcon(newTheme);
+}
+
+function updateThemeIcon(theme) {
+  if (themeIcon) {
+    themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+  }
+}
+
 // --- FUNCIONES EXISTENTES MEJORADAS ---
 function populateYearSelector() {
   if (!yearSelect) return;
@@ -547,7 +583,10 @@ function populateYearSelector() {
   const currentYear = new Date().getFullYear();
   yearSelect.innerHTML = '';
   
-  for (let year = currentYear - 2; year <= currentYear + 3; year++) {
+  // Solo permitir años específicos: 2024, 2025, 2026
+  const allowedYears = [2024, 2025, 2026];
+  
+  allowedYears.forEach(year => {
     const option = document.createElement('option');
     option.value = year;
     option.textContent = year;
@@ -555,7 +594,7 @@ function populateYearSelector() {
       option.selected = true;
     }
     yearSelect.appendChild(option);
-  }
+  });
 }
 
 function showLoading() {
@@ -708,14 +747,25 @@ function removeHoliday(date, name) {
 
 function updateHolidays() {
   const year = parseInt(yearSelect?.value || new Date().getFullYear());
+  
+  // Limpiar caché cuando cambia el año para forzar recarga
+  localStorage.removeItem(MATARO_CACHE_KEY);
+  
   const basicHolidays = getBasicHolidays(year);
+  const mataroHolidays = getMataroHolidays(year);
   
   // Combinar festivos básicos, de Mataró y personalizados
   holidays = [
     ...basicHolidays.map(h => h.date),
-    ...holidaysMataro.map(h => h.date),
+    ...mataroHolidays.map(h => h.date),
     ...customHolidays.map(h => h.date)
   ];
+  
+  // Actualizar holidaysMataro para la visualización
+  holidaysMataro = [...basicHolidays, ...mataroHolidays, ...customHolidays];
+  
+  // Actualizar la lista visual de festivos
+  renderHolidayList();
   
   debouncedCalculateBalance();
 }
@@ -834,6 +884,53 @@ function getBasicHolidays(year) {
   ];
 }
 
+// Función para obtener festivos específicos de Mataró por año
+function getMataroHolidays(year) {
+  switch (year) {
+    case 2025:
+      return [
+        { date: '2025-01-01', name: 'Cap d\'Any', source: 'Mataró' },
+        { date: '2025-01-06', name: 'Reis', source: 'Mataró' },
+        { date: '2025-04-18', name: 'Divendres Sant', source: 'Mataró' },
+        { date: '2025-04-21', name: 'Dilluns de Pasqua Florida', source: 'Mataró' },
+        { date: '2025-05-01', name: 'Festa del Treball', source: 'Mataró' },
+        { date: '2025-06-09', name: 'Fira a Mataró', source: 'Mataró' },
+        { date: '2025-06-24', name: 'Sant Joan', source: 'Mataró' },
+        { date: '2025-07-28', name: 'Festa major de Les Santes', source: 'Mataró' },
+        { date: '2025-08-15', name: 'L\'Assumpció', source: 'Mataró' },
+        { date: '2025-09-11', name: 'Diada Nacional de Catalunya', source: 'Mataró' },
+        { date: '2025-11-01', name: 'Tots Sants', source: 'Mataró' },
+        { date: '2025-12-06', name: 'Dia de la Constitució', source: 'Mataró' },
+        { date: '2025-12-08', name: 'La Immaculada', source: 'Mataró' },
+        { date: '2025-12-25', name: 'Nadal', source: 'Mataró' },
+        { date: '2025-12-26', name: 'Sant Esteve', source: 'Mataró' }
+      ];
+    case 2026:
+      return [
+        { date: '2026-01-01', name: 'Cap d\'Any', source: 'Mataró' },
+        { date: '2026-01-06', name: 'Reis', source: 'Mataró' },
+        { date: '2026-04-03', name: 'Divendres Sant', source: 'Mataró' },
+        { date: '2026-04-06', name: 'Dilluns de Pasqua Florida', source: 'Mataró' },
+        { date: '2026-05-01', name: 'Festa del Treball', source: 'Mataró' },
+        { date: '2026-06-09', name: 'Fira a Mataró', source: 'Mataró' },
+        { date: '2026-06-24', name: 'Sant Joan', source: 'Mataró' },
+        { date: '2026-07-28', name: 'Festa major de Les Santes', source: 'Mataró' },
+        { date: '2026-08-15', name: 'L\'Assumpció', source: 'Mataró' },
+        { date: '2026-09-11', name: 'Diada Nacional de Catalunya', source: 'Mataró' },
+        { date: '2026-11-01', name: 'Tots Sants', source: 'Mataró' },
+        { date: '2026-12-06', name: 'Dia de la Constitució', source: 'Mataró' },
+        { date: '2026-12-08', name: 'La Immaculada', source: 'Mataró' },
+        { date: '2026-12-25', name: 'Nadal', source: 'Mataró' },
+        { date: '2026-12-26', name: 'Sant Esteve', source: 'Mataró' }
+      ];
+    case 2024:
+      // Para 2024 solo festivos nacionales básicos
+      return [];
+    default:
+      return [];
+  }
+}
+
 function getEasterDate(year) {
   const a = year % 19;
   const b = Math.floor(year / 100);
@@ -854,6 +951,9 @@ function getEasterDate(year) {
 
 async function initializeApp() {
   try {
+    // Inicializar tema
+    initializeTheme();
+    
     // Inicializar elementos DOM
     initializeDOMElements();
     
@@ -1181,6 +1281,9 @@ function setupEventListeners() {
   if (shareEmailBtn) shareEmailBtn.addEventListener('click', shareViaEmail);
   if (addToCalendarBtn) addToCalendarBtn.addEventListener('click', addToCalendar);
   
+  // Event listener para el tema
+  if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
+  
   // Configurar formulario de festivos personalizados
   if (addHolidayForm) {
     addHolidayForm.addEventListener('submit', (e) => {
@@ -1278,40 +1381,14 @@ function saveCustomHolidays() {
 
 async function loadHolidaysInBackground() {
   try {
-    // Intentar cargar desde caché primero
-    const cached = localStorage.getItem(MATARO_CACHE_KEY);
-    if (cached) {
-      const { data, timestamp } = JSON.parse(cached);
-      if (Date.now() - timestamp < MATARO_CACHE_TTL) {
-        holidaysMataro = data;
-        updateHolidays();
-        calculateBalance();
-        return;
-      }
-    }
+    const currentYear = parseInt(yearSelect?.value || new Date().getFullYear());
     
-    // Usar directamente los festivos oficiales de Mataró 2025
-    const mataroOfficialHolidays2025 = [
-      { date: '2025-01-01', name: 'Cap d\'Any', source: 'Mataró' },
-      { date: '2025-01-06', name: 'Reis', source: 'Mataró' },
-      { date: '2025-04-18', name: 'Divendres Sant', source: 'Mataró' },
-      { date: '2025-04-21', name: 'Dilluns de Pasqua Florida', source: 'Mataró' },
-      { date: '2025-05-01', name: 'Festa del Treball', source: 'Mataró' },
-      { date: '2025-06-09', name: 'Fira a Mataró', source: 'Mataró' },
-      { date: '2025-06-24', name: 'Sant Joan', source: 'Mataró' },
-      { date: '2025-07-28', name: 'Festa major de Les Santes', source: 'Mataró' },
-      { date: '2025-08-15', name: 'L\'Assumpció', source: 'Mataró' },
-      { date: '2025-09-11', name: 'Diada Nacional de Catalunya', source: 'Mataró' },
-      { date: '2025-11-01', name: 'Tots Sants', source: 'Mataró' },
-      { date: '2025-12-06', name: 'Dia de la Constitució', source: 'Mataró' },
-      { date: '2025-12-08', name: 'La Immaculada', source: 'Mataró' },
-      { date: '2025-12-25', name: 'Nadal', source: 'Mataró' },
-      { date: '2025-12-26', name: 'Sant Esteve', source: 'Mataró' }
-    ];
+    // Obtener festivos según el año seleccionado
+    const basicHolidays = getBasicHolidays(currentYear);
+    const mataroHolidays = getMataroHolidays(currentYear);
     
-    // Combinar festivos básicos, oficiales de Mataró y personalizados
-    const basicHolidays = getBasicHolidays(new Date().getFullYear());
-    holidaysMataro = [...basicHolidays, ...mataroOfficialHolidays2025, ...customHolidays];
+    // Combinar festivos básicos, de Mataró y personalizados
+    holidaysMataro = [...basicHolidays, ...mataroHolidays, ...customHolidays];
     
     // Guardar en caché
     localStorage.setItem(MATARO_CACHE_KEY, JSON.stringify({
@@ -1325,19 +1402,13 @@ async function loadHolidaysInBackground() {
     calculateBalance();
     
   } catch (error) {
-    console.error('❌ Error cargando festivos de Mataró:', error);
+    console.error('❌ Error cargando festivos:', error);
     
-    // Fallback con festivos básicos + específicos de Mataró
-    const basicHolidays = getBasicHolidays(new Date().getFullYear());
-    const mataroSpecific2025 = [
-      { date: '2025-07-28', name: 'Festa major de Les Santes', source: 'Mataró' },
-      { date: '2025-06-09', name: 'Fira a Mataró', source: 'Mataró' },
-      { date: '2025-06-24', name: 'Sant Joan', source: 'Mataró' },
-      { date: '2025-08-15', name: 'L\'Assumpció', source: 'Mataró' },
-      { date: '2025-09-11', name: 'Diada Nacional de Catalunya', source: 'Mataró' },
-      { date: '2025-12-26', name: 'Sant Esteve', source: 'Mataró' }
-    ];
-    holidaysMataro = [...basicHolidays, ...mataroSpecific2025, ...customHolidays];
+    // Fallback con festivos básicos
+    const currentYear = parseInt(yearSelect?.value || new Date().getFullYear());
+    const basicHolidays = getBasicHolidays(currentYear);
+    const mataroHolidays = getMataroHolidays(currentYear);
+    holidaysMataro = [...basicHolidays, ...mataroHolidays, ...customHolidays];
     
     updateHolidays();
     renderHolidayList();
