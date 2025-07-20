@@ -1,21 +1,73 @@
 {
-  "name": "MyWebSite",
-  "short_name": "MySite",
+  "name": "Calculadora de Horas de Servicio",
+  "short_name": "Calculadora Horas",
+  "description": "Calcula el balance de horas mensuales según tu plan de trabajo",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#667eea",
+  "theme_color": "#6366f1",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "es",
   "icons": [
     {
-      "src": "/web-app-manifest-192x192.png",
-      "sizes": "192x192",
+      "src": "favicon-96x96.png",
+      "sizes": "96x96",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     },
     {
-      "src": "/web-app-manifest-512x512.png",
+      "src": "web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "web-app-manifest-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
   ],
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
-  "display": "standalone"
+  "categories": ["productivity", "business"],
+  "screenshots": [
+    {
+      "src": "screenshot-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "screenshot-narrow.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Calcular Balance",
+      "short_name": "Calcular",
+      "description": "Calcular el balance de horas del mes actual",
+      "url": "/?action=calculate",
+      "icons": [
+        {
+          "src": "favicon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Ver Festivos",
+      "short_name": "Festivos",
+      "description": "Ver lista de festivos del mes",
+      "url": "/?action=holidays",
+      "icons": [
+        {
+          "src": "favicon-96x96.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
 }

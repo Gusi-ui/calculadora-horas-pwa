@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Calculadora de horas de servicio para planificar tu trabajo mensual" />
     <meta name="theme-color" content="#6366f1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Calculadora Horas" />
     
     <title>Calculadora de Horas de Servicio</title>
     
     <!-- Preload recursos críticos -->
     <link rel="preload" href="css/sheet.css" as="style" />
-    <link rel="preload" href="main.js?v=3.8" as="script" />
+    <link rel="preload" href="main.js?v=6.5" as="script" />
     
     <!-- Favicons -->
     <link rel="icon" type="image/svg+xml" href="favicons/favicon.svg" />
@@ -27,243 +30,335 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/slim-select@2.8.0/dist/slimselect.min.css" />
     
     <!-- Script principal -->
-    <script src="main.js?v=3.8"></script>
+    <script src="main.js?v=6.5"></script>
+    
+    <!-- Limpiar caché y forzar recarga -->
+    <script>
+      // Limpiar caché del navegador para este dominio
+      if ('caches' in window) {
+        caches.keys().then(function(names) {
+          for (let name of names) {
+            caches.delete(name);
+          }
+        });
+      }
+      
+      // Forzar recarga si se detecta versión antigua
+      if (typeof window.appVersion === 'undefined') {
+        window.appVersion = '6.5';
+      } else if (window.appVersion !== '6.5') {
+        console.log('Detectada versión antigua, recargando...');
+        window.location.reload(true);
+      }
+    </script>
+    
+    <!-- Service Worker para PWA -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('SW registrado: ', registration);
+            })
+            .catch((registrationError) => {
+              console.log('SW registro falló: ', registrationError);
+            });
+        });
+      }
+    </script>
   </head>
   <body>
-    <div class="container">
+    <div class="container" role="main">
+      <!-- Skip to main content link for accessibility -->
+      <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
+      
       <!-- Cabecera principal -->
-      <div class="header">
+      <header class="header" role="banner">
         <h1>🕒 Calculadora de Horas de Servicio</h1>
         <p>Calcula el balance de horas mensuales según tu plan de trabajo</p>
-      </div>
+      </header>
 
       <!-- Formulario principal -->
-      <form id="mainForm">
-        <!-- Controles superiores -->
-        <div class="top-controls-v2">
-          <div class="styled-select-group">
-            <label for="year">Año</label>
-            <div class="select-wrapper">
-              <select id="year" class="styled-select slim-select"></select>
-              <span class="select-arrow"></span>
+      <main id="main-content" role="main">
+        <form id="mainForm" role="form" aria-label="Configuración de horas de servicio">
+          <!-- Controles superiores -->
+          <fieldset class="top-controls-v2">
+            <legend class="sr-only">Configuración básica</legend>
+            
+            <div class="styled-select-group">
+              <label for="year" id="year-label">Año</label>
+              <div class="select-wrapper">
+                <select id="year" class="styled-select slim-select" aria-labelledby="year-label" aria-describedby="year-help"></select>
+                <span class="select-arrow" aria-hidden="true"></span>
+              </div>
+              <div id="year-help" class="sr-only">Selecciona el año para el que quieres calcular las horas</div>
             </div>
-          </div>
-          
-          <div class="styled-select-group">
-            <label for="month">Mes</label>
-            <div class="select-wrapper">
-              <select id="month" class="styled-select slim-select">
-                <option value="0">Enero</option>
-                <option value="1">Febrero</option>
-                <option value="2">Marzo</option>
-                <option value="3">Abril</option>
-                <option value="4">Mayo</option>
-                <option value="5">Junio</option>
-                <option value="6">Julio</option>
-                <option value="7">Agosto</option>
-                <option value="8">Septiembre</option>
-                <option value="9">Octubre</option>
-                <option value="10">Noviembre</option>
-                <option value="11">Diciembre</option>
+            
+            <div class="styled-select-group">
+              <label for="month" id="month-label">Mes</label>
+              <div class="select-wrapper">
+                <select id="month" class="styled-select slim-select" aria-labelledby="month-label" aria-describedby="month-help">
+                  <option value="0">Enero</option>
+                  <option value="1">Febrero</option>
+                  <option value="2">Marzo</option>
+                  <option value="3">Abril</option>
+                  <option value="4">Mayo</option>
+                  <option value="5">Junio</option>
+                  <option value="6">Julio</option>
+                  <option value="7">Agosto</option>
+                  <option value="8">Septiembre</option>
+                  <option value="9">Octubre</option>
+                  <option value="10">Noviembre</option>
+                  <option value="11">Diciembre</option>
+                </select>
+                <span class="select-arrow" aria-hidden="true"></span>
+              </div>
+              <div id="month-help" class="sr-only">Selecciona el mes para el que quieres calcular las horas</div>
+            </div>
+            
+            <div class="assigned-hours-field">
+              <label for="totalHours" id="totalHours-label">Horas asignadas al mes</label>
+              <select id="totalHours" class="assigned-hours-input-v2 big-hours slim-square" required aria-labelledby="totalHours-label" aria-describedby="totalHours-help">
+                <option value="">--</option>
+                <!-- Opciones generadas por JS -->
               </select>
-              <span class="select-arrow"></span>
+              <div id="totalHours-help" class="sr-only">Selecciona el número total de horas que tienes asignadas para este mes</div>
             </div>
-          </div>
-          
-          <div class="assigned-hours-field">
-            <label for="totalHours">Horas asignadas al mes</label>
-            <select id="totalHours" class="assigned-hours-input-v2 big-hours slim-square" required>
-              <option value="">--</option>
-              <!-- Opciones generadas por JS -->
-            </select>
-          </div>
-        </div>
+          </fieldset>
 
-        <!-- Configuración de días de la semana -->
-        <div class="weekdays-settings">
-          <label>🎉 Festivos y fines de semana</label>
-          <div class="weekdays-list">
-            <div class="weekday-item">
-              <label>Contabilizar</label>
-              <label class="switch">
-                <input type="checkbox" id="includeOffdays" />
-                <span class="slider round"></span>
-              </label>
-              <div id="festivo-hours-group" style="display: none; width: 100%; margin-top: 0.3rem;">
-                <select id="hours-festivo" class="weekday-hours">
+          <!-- Configuración de días de la semana -->
+          <fieldset class="weekdays-settings">
+            <legend>🎉 Festivos y fines de semana</legend>
+            <div class="weekdays-list">
+              <div class="weekday-item">
+                <label for="includeOffdays" id="includeOffdays-label">Contabilizar</label>
+                <label class="switch" role="switch" aria-checked="false" tabindex="0">
+                  <input type="checkbox" id="includeOffdays" aria-labelledby="includeOffdays-label" />
+                  <span class="slider round" aria-hidden="true"></span>
+                </label>
+                <div id="festivo-hours-group" style="display: none; width: 100%; margin-top: 0.3rem;">
+                  <label for="hours-festivo" id="festivo-hours-label" class="sr-only">Horas para festivos</label>
+                  <select id="hours-festivo" class="weekday-hours" aria-labelledby="festivo-hours-label">
+                    <option value="">--</option>
+                    <!-- Opciones generadas por JS -->
+                  </select>
+                </div>
+              </div>
+            </div>
+            
+            <legend>📅 Días de la semana con servicio</legend>
+            <div class="weekdays-list" role="group" aria-labelledby="weekdays-legend">
+              <div id="weekdays-legend" class="sr-only">Configuración de días laborables</div>
+              
+              <div class="weekday-item">
+                <label for="weekday-mon" id="mon-label">Lunes</label>
+                <label class="switch" role="switch" aria-checked="false" tabindex="0">
+                  <input type="checkbox" id="weekday-mon" aria-labelledby="mon-label" />
+                  <span class="slider round" aria-hidden="true"></span>
+                </label>
+                <select id="hours-mon" class="weekday-hours" placeholder="Horas ese día" step="0.25" min="0" style="width: 100%; margin-top: 0.3rem; display: none;" required aria-labelledby="mon-label">
+                  <option value="">--</option>
+                  <!-- Opciones generadas por JS -->
+                </select>
+              </div>
+              
+              <div class="weekday-item">
+                <label for="weekday-tue" id="tue-label">Martes</label>
+                <label class="switch" role="switch" aria-checked="false" tabindex="0">
+                  <input type="checkbox" id="weekday-tue" aria-labelledby="tue-label" />
+                  <span class="slider round" aria-hidden="true"></span>
+                </label>
+                <select id="hours-tue" class="weekday-hours" placeholder="Horas ese día" step="0.25" min="0" style="width: 100%; margin-top: 0.3rem; display: none;" required aria-labelledby="tue-label">
+                  <option value="">--</option>
+                  <!-- Opciones generadas por JS -->
+                </select>
+              </div>
+              
+              <div class="weekday-item">
+                <label for="weekday-wed" id="wed-label">Miércoles</label>
+                <label class="switch" role="switch" aria-checked="false" tabindex="0">
+                  <input type="checkbox" id="weekday-wed" aria-labelledby="wed-label" />
+                  <span class="slider round" aria-hidden="true"></span>
+                </label>
+                <select id="hours-wed" class="weekday-hours" placeholder="Horas ese día" step="0.25" min="0" style="width: 100%; margin-top: 0.3rem; display: none;" required aria-labelledby="wed-label">
+                  <option value="">--</option>
+                  <!-- Opciones generadas por JS -->
+                </select>
+              </div>
+              
+              <div class="weekday-item">
+                <label for="weekday-thu" id="thu-label">Jueves</label>
+                <label class="switch" role="switch" aria-checked="false" tabindex="0">
+                  <input type="checkbox" id="weekday-thu" aria-labelledby="thu-label" />
+                  <span class="slider round" aria-hidden="true"></span>
+                </label>
+                <select id="hours-thu" class="weekday-hours" placeholder="Horas ese día" step="0.25" min="0" style="width: 100%; margin-top: 0.3rem; display: none;" required aria-labelledby="thu-label">
+                  <option value="">--</option>
+                  <!-- Opciones generadas por JS -->
+                </select>
+              </div>
+              
+              <div class="weekday-item">
+                <label for="weekday-fri" id="fri-label">Viernes</label>
+                <label class="switch" role="switch" aria-checked="false" tabindex="0">
+                  <input type="checkbox" id="weekday-fri" aria-labelledby="fri-label" />
+                  <span class="slider round" aria-hidden="true"></span>
+                </label>
+                <select id="hours-fri" class="weekday-hours" placeholder="Horas ese día" step="0.25" min="0" style="width: 100%; margin-top: 0.3rem; display: none;" required aria-labelledby="fri-label">
+                  <option value="">--</option>
+                  <!-- Opciones generadas por JS -->
+                </select>
+              </div>
+              
+              <div class="weekday-item">
+                <label for="weekday-sat" id="sat-label">Sábado</label>
+                <label class="switch" role="switch" aria-checked="false" tabindex="0">
+                  <input type="checkbox" id="weekday-sat" aria-labelledby="sat-label" />
+                  <span class="slider round" aria-hidden="true"></span>
+                </label>
+                <select id="hours-sat" class="weekday-hours" placeholder="Horas ese día" step="0.25" min="0" style="width: 100%; margin-top: 0.3rem; display: none;" required aria-labelledby="sat-label">
+                  <option value="">--</option>
+                  <!-- Opciones generadas por JS -->
+                </select>
+              </div>
+              
+              <div class="weekday-item">
+                <label for="weekday-sun" id="sun-label">Domingo</label>
+                <label class="switch" role="switch" aria-checked="false" tabindex="0">
+                  <input type="checkbox" id="weekday-sun" aria-labelledby="sun-label" />
+                  <span class="slider round" aria-hidden="true"></span>
+                </label>
+                <select id="hours-sun" class="weekday-hours" placeholder="Horas ese día" step="0.25" min="0" style="width: 100%; margin-top: 0.3rem; display: none;" required aria-labelledby="sun-label">
                   <option value="">--</option>
                   <!-- Opciones generadas por JS -->
                 </select>
               </div>
             </div>
+          </fieldset>
+
+          <!-- Botones de acción -->
+          <div class="main-action" role="group" aria-label="Acciones principales" style="display: none;">
+            <button class="btn" id="calculateBtn" type="button" aria-describedby="calculate-help">
+              <span aria-hidden="true">📊</span> Calcular Balance
+            </button>
+            <button class="btn btn-secondary" id="resetBtn" type="button" aria-describedby="reset-help">
+              <span aria-hidden="true">🔄</span> Reset
+            </button>
+            <button class="btn btn-secondary" id="clearCacheBtn" type="button" aria-describedby="cache-help">
+              <span aria-hidden="true">🗑️</span> Limpiar Caché
+            </button>
           </div>
           
-          <label>📅 Días de la semana con servicio</label>
-          <div class="weekdays-list">
-            <div class="weekday-item">
-              <label>Lunes</label>
-              <label class="switch">
-                <input type="checkbox" id="weekday-mon" />
-                <span class="slider round"></span>
-              </label>
-              <select id="hours-mon" class="weekday-hours" placeholder="Horas ese día" step="0.25" min="0" style="width: 100%; margin-top: 0.3rem; display: none;" required>
-                <option value="">--</option>
-                <!-- Opciones generadas por JS -->
-              </select>
-            </div>
-            
-            <div class="weekday-item">
-              <label>Martes</label>
-              <label class="switch">
-                <input type="checkbox" id="weekday-tue" />
-                <span class="slider round"></span>
-              </label>
-              <select id="hours-tue" class="weekday-hours" placeholder="Horas ese día" step="0.25" min="0" style="width: 100%; margin-top: 0.3rem; display: none;" required>
-                <option value="">--</option>
-                <!-- Opciones generadas por JS -->
-              </select>
-            </div>
-            
-            <div class="weekday-item">
-              <label>Miércoles</label>
-              <label class="switch">
-                <input type="checkbox" id="weekday-wed" />
-                <span class="slider round"></span>
-              </label>
-              <select id="hours-wed" class="weekday-hours" placeholder="Horas ese día" step="0.25" min="0" style="width: 100%; margin-top: 0.3rem; display: none;" required>
-                <option value="">--</option>
-                <!-- Opciones generadas por JS -->
-              </select>
-            </div>
-            
-            <div class="weekday-item">
-              <label>Jueves</label>
-              <label class="switch">
-                <input type="checkbox" id="weekday-thu" />
-                <span class="slider round"></span>
-              </label>
-              <select id="hours-thu" class="weekday-hours" placeholder="Horas ese día" step="0.25" min="0" style="width: 100%; margin-top: 0.3rem; display: none;" required>
-                <option value="">--</option>
-                <!-- Opciones generadas por JS -->
-              </select>
-            </div>
-            
-            <div class="weekday-item">
-              <label>Viernes</label>
-              <label class="switch">
-                <input type="checkbox" id="weekday-fri" />
-                <span class="slider round"></span>
-              </label>
-              <select id="hours-fri" class="weekday-hours" placeholder="Horas ese día" step="0.25" min="0" style="width: 100%; margin-top: 0.3rem; display: none;" required>
-                <option value="">--</option>
-                <!-- Opciones generadas por JS -->
-              </select>
-            </div>
-            
-            <div class="weekday-item">
-              <label>Sábado</label>
-              <label class="switch">
-                <input type="checkbox" id="weekday-sat" />
-                <span class="slider round"></span>
-              </label>
-              <select id="hours-sat" class="weekday-hours" placeholder="Horas ese día" step="0.25" min="0" style="width: 100%; margin-top: 0.3rem; display: none;" required>
-                <option value="">--</option>
-                <!-- Opciones generadas por JS -->
-              </select>
-            </div>
-            
-            <div class="weekday-item">
-              <label>Domingo</label>
-              <label class="switch">
-                <input type="checkbox" id="weekday-sun" />
-                <span class="slider round"></span>
-              </label>
-              <select id="hours-sun" class="weekday-hours" placeholder="Horas ese día" step="0.25" min="0" style="width: 100%; margin-top: 0.3rem; display: none;" required>
-                <option value="">--</option>
-                <!-- Opciones generadas por JS -->
-              </select>
-            </div>
-          </div>
+          <!-- Help text for buttons -->
+          <div id="calculate-help" class="sr-only">Calcula el balance de horas para el mes seleccionado</div>
+          <div id="reset-help" class="sr-only">Restablece todos los valores a su estado inicial</div>
+          <div id="cache-help" class="sr-only">Elimina los datos de festivos almacenados localmente</div>
+        </form>
+
+        <!-- Mensaje informativo -->
+        <div class="info-message" role="status" aria-live="polite">
+          <p>💡 <strong>El cálculo se actualiza automáticamente</strong> cuando cambias cualquier configuración. Los festivos de Mataró se cargan automáticamente al abrir la página.</p>
         </div>
 
-        <!-- Botones de acción -->
-        <div class="main-action">
-          <button class="btn" id="calculateBtn" type="button">Calcular Balance</button>
-          <button class="btn btn-secondary" id="resetBtn" type="button">Reset</button>
-          <button class="btn btn-secondary" id="clearCacheBtn" type="button">Limpiar Caché</button>
+        <!-- Loading -->
+        <div id="loading" class="loading" role="status" aria-live="polite" aria-label="Cargando datos">
+          <div class="spinner" aria-hidden="true"></div>
+          <p>Cargando datos de festivos...</p>
         </div>
-      </form>
 
-      <!-- Loading -->
-      <div id="loading" class="loading">
-        <div class="spinner"></div>
-        <p>Cargando datos de festivos...</p>
-      </div>
+        <!-- Mensajes de error -->
+        <div id="error-container" role="alert" aria-live="assertive"></div>
 
-      <!-- Mensajes de error -->
-      <div id="error-container"></div>
+        <!-- Resultados -->
+        <section id="results-container" class="results-container" style="display: none" role="region" aria-labelledby="results-title">
+          <h2 id="results-title" class="sr-only">Resultados del cálculo</h2>
+          <div class="details-grid">
+            <!-- Balance del Mes - PRIMERA POSICIÓN Y DESTACADO -->
+            <div class="detail-card balance-card">
+              <h3><span aria-hidden="true">📊</span> Balance del Mes</h3>
+              <p id="balanceValue" aria-live="polite">0.00 horas</p>
+            </div>
+            
+            <!-- Horas realizadas hasta hoy - SEGUNDA POSICIÓN -->
+            <div class="detail-card">
+              <h3><span aria-hidden="true">✅</span> Horas realizadas hasta hoy</h3>
+              <p id="hoursSoFar" aria-live="polite">--</p>
+            </div>
+            
+            <!-- Horas para el mes específico - TERCERA POSICIÓN -->
+            <div class="detail-card">
+              <h3 id="totalMonthHoursTitle">
+                <span aria-hidden="true">🗓️</span> Horas para <span id="monthNameTitle">Julio</span>
+                <span id="yearTitle">2025</span>
+              </h3>
+              <p id="totalMonthHours" aria-live="polite">--</p>
+            </div>
+            
+            <!-- Días laborables - CUARTA POSICIÓN -->
+            <div class="detail-card">
+              <h3><span aria-hidden="true">💼</span> Días laborables</h3>
+              <p id="workdays" aria-live="polite">--</p>
+            </div>
+            
+            <!-- Fines de semana / Festivos - QUINTA POSICIÓN -->
+            <div class="detail-card">
+              <h3><span aria-hidden="true">🎉</span> Fines de semana / Festivos</h3>
+              <p id="offDays" aria-live="polite">--</p>
+            </div>
+          </div>
+          
+          <!-- Botones de compartir -->
+          <div class="share-buttons" role="group" aria-label="Compartir resultados">
+            <button class="btn btn-share" id="shareWhatsAppBtn" type="button" aria-label="Compartir por WhatsApp">
+              <span aria-hidden="true">📱</span> WhatsApp
+            </button>
+            <button class="btn btn-share" id="shareEmailBtn" type="button" aria-label="Compartir por Email">
+              <span aria-hidden="true">📧</span> Email
+            </button>
+            <button class="btn btn-share" id="addToCalendarBtn" type="button" aria-label="Añadir al calendario">
+              <span aria-hidden="true">📅</span> Calendario
+            </button>
+          </div>
+        </section>
 
-      <!-- Resultados -->
-      <div id="results-container" class="results-container" style="display: none">
-        <div class="details-grid">
-          <div class="detail-card">
-            <h3 id="totalMonthHoursTitle">
-              🗓️ Horas para <span id="monthNameTitle">Julio</span>
-              <span id="yearTitle">2025</span>
-            </h3>
-            <p id="totalMonthHours">--</p>
-          </div>
+        <!-- Festivos personalizados -->
+        <section class="results-container">
+          <button id="toggleHolidayListBtn" class="btn" type="button" aria-expanded="false" aria-controls="holidayListContainer">
+            <span aria-hidden="true">🎉</span> Mostrar festivos
+          </button>
           
-          <div class="detail-card">
-            <h3>✅ Horas realizadas hasta hoy</h3>
-            <p id="hoursSoFar">--</p>
+          <div id="holidayListContainer" class="holiday-list-container" role="region" aria-labelledby="holidays-title">
+            <h3 id="holidays-title"><span aria-hidden="true">🎈</span> Festivos usados en el cálculo</h3>
+            <ul id="holidayList" role="list"></ul>
+            
+            <form id="addHolidayForm" class="add-holiday-form" role="form" aria-label="Añadir festivo personalizado">
+              <label for="customHolidayDate" class="sr-only">Fecha del festivo</label>
+              <input type="date" id="customHolidayDate" required aria-describedby="date-help" />
+              <div id="date-help" class="sr-only">Selecciona la fecha del festivo personalizado</div>
+              
+              <label for="customHolidayName" class="sr-only">Nombre del festivo</label>
+              <input
+                type="text"
+                id="customHolidayName"
+                placeholder="Nombre del festivo"
+                required
+                aria-describedby="name-help"
+              />
+              <div id="name-help" class="sr-only">Introduce el nombre del festivo personalizado</div>
+              
+              <button type="submit" class="btn" aria-label="Añadir festivo">
+                <span aria-hidden="true">+</span>
+              </button>
+            </form>
           </div>
-          
-          <div class="detail-card">
-            <h3>💼 Días laborables</h3>
-            <p id="workdays">--</p>
-          </div>
-          
-          <div class="detail-card">
-            <h3>🎉 Fines de semana / Festivos</h3>
-            <p id="offDays">--</p>
-          </div>
-          
-          <div class="detail-card">
-            <h3>📊 Balance del Mes</h3>
-            <p id="balanceValue">0.00 horas</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Festivos personalizados -->
-      <div class="results-container">
-        <button id="toggleHolidayListBtn" class="btn" type="button">
-          🎉 Mostrar festivos
-        </button>
-        
-        <div id="holidayListContainer" class="holiday-list-container">
-          <h3>🎈 Festivos usados en el cálculo</h3>
-          <ul id="holidayList"></ul>
-          
-          <form id="addHolidayForm" class="add-holiday-form">
-            <input type="date" id="customHolidayDate" required />
-            <input
-              type="text"
-              id="customHolidayName"
-              placeholder="Nombre del festivo"
-              required
-            />
-            <button type="submit" class="btn">+</button>
-          </form>
-        </div>
-      </div>
+        </section>
+      </main>
 
       <!-- Footer -->
-      <footer class="footer">
+      <footer class="footer" role="contentinfo">
         <div class="footer-content">
           <span>Hecho con</span>
-          <span class="heart-icon">❤️</span>
+          <span class="heart-icon" aria-label="amor">❤️</span>
           <span>por Gusi</span>
         </div>
       </footer>

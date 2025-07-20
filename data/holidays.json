@@ -18,6 +18,8 @@
     { "date": "2025-11-01", "name": "Todos los Santos" },
     { "date": "2025-12-06", "name": "Día de la Constitución Española" },
     { "date": "2025-12-08", "name": "Inmaculada Concepción" },
-    { "date": "2025-12-25", "name": "Natividad del Señor" }
+    { "date": "2025-12-25", "name": "Natividad del Señor" },
+    { "date": "2025-07-28", "name": "Festa Major de Mataró" },
+    { "date": "2025-09-11", "name": "Diada de Catalunya" }
   ]
 }

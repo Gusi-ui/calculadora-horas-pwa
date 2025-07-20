@@ -1,65 +1,185 @@
-# Calculadora de Horas de Servicio
+# 🕒 Calculadora de Horas de Servicio
 
-Esta aplicación web te permite calcular el balance de horas mensuales según tu plan, teniendo en cuenta días laborables, festivos y fines de semana. Permite personalizar los festivos, seleccionar exactamente qué días de la semana recibes servicio y cuántas horas, y ajustar la configuración de horas para festivos y fines de semana. Todo con una interfaz moderna y responsiva.
+Una aplicación web moderna y accesible para calcular el balance de horas mensuales según tu plan de trabajo.
 
-## Características
-- Cálculo automático de horas asignadas, consumidas y balance mensual.
-- Selección flexible de días de la semana y horas por día (con selectores visuales y en incrementos de 15 minutos).
-- Gestión de festivos locales (Mataró) y personalizados.
-- Visualización de festivos como tarjetas apiladas, con distinción visual entre festivos pasados y futuros.
-- Formulario mejorado para añadir festivos, con botón de añadir rápido (+).
-- Interfaz moderna, responsiva y optimizada para móvil y escritorio.
-- Resultados claros y visuales, con balance en verde o rojo según el resultado.
-- Favicon y manifest listos para PWA y máxima compatibilidad.
+## ✨ Características Principales
 
-## Instalación y uso local
-1. Clona el repositorio:
-   ```sh
-   git clone https://github.com/Gusi-ui/fechahora.git
-   cd fechahora/planing_limpio
-   ```
-2. Arranca un servidor local (por ejemplo, con Python):
-   ```sh
-   python3 -m http.server 8000
-   ```
-3. Abre tu navegador en [http://localhost:8000](http://localhost:8000)
+### 📊 Cálculo Inteligente
+- **Configuración flexible**: Define horarios diferentes para cada día de la semana
+- **Gestión de festivos**: Incluye festivos oficiales y personalizados
+- **Cálculo automático**: Balance en tiempo real con horas asignadas vs. realizadas
+- **Fines de semana**: Opción para incluir o excluir fines de semana y festivos
 
-## ¿Cómo funciona?
-- Selecciona el año, mes y las horas asignadas al mes (con selector visual).
-- Activa los días de la semana en los que recibes servicio y elige cuántas horas se realizan cada día.
-- Si tienes servicio en festivos y fines de semana, activa la opción y selecciona las horas para esos días.
-- Añade festivos personalizados fácilmente con el formulario y el botón "+".
-- Consulta el balance mensual y los detalles de días laborables, festivos y horas realizadas.
-- Los festivos pasados aparecen atenuados en la lista para mejor visualización.
+### 🎯 Funcionalidades Avanzadas
+- **Festivos personalizados**: Añade tus propios festivos específicos
+- **Caché inteligente**: Almacenamiento local de festivos para mejor rendimiento
+- **Persistencia de datos**: Tus configuraciones se guardan automáticamente
+- **Cálculo en tiempo real**: Resultados actualizados automáticamente
 
-## Estructura de carpetas
+### 📱 Experiencia Móvil Mejorada
+- **Diseño responsive**: Optimizado para móviles, tablets y desktop
+- **Gestos táctiles**: Interfaz optimizada para dispositivos táctiles
+- **Modo landscape**: Adaptación perfecta para orientación horizontal
+- **PWA instalable**: Instala como aplicación nativa en tu dispositivo
+
+### ♿ Accesibilidad Completa
+- **Navegación por teclado**: Control completo sin necesidad de ratón
+- **Lectores de pantalla**: Compatible con tecnologías asistivas
+- **Contraste mejorado**: Soporte para preferencias de alto contraste
+- **Textos alternativos**: Descripciones para todos los elementos visuales
+- **Estructura semántica**: HTML bien estructurado para mejor accesibilidad
+
+### 🔗 Integración Móvil
+- **Compartir por WhatsApp**: Envía resultados directamente a WhatsApp
+- **Compartir por Email**: Genera emails con el balance de horas
+- **Añadir al calendario**: Crea eventos en Google Calendar automáticamente
+- **Widgets**: Acceso rápido desde la pantalla de inicio (PWA)
+
+## 🚀 Instalación y Uso
+
+### Instalación Local
+1. Clona o descarga el repositorio
+2. Abre `index.html` en tu navegador
+3. ¡Listo para usar!
+
+### Instalación como PWA
+1. Abre la aplicación en Chrome/Edge
+2. Haz clic en el icono de instalación en la barra de direcciones
+3. La aplicación se instalará como una app nativa
+
+## 📋 Cómo Usar
+
+### 1. Configuración Básica
+- Selecciona el **año** y **mes** para calcular
+- Define las **horas asignadas** para ese mes
+
+### 2. Configuración de Días
+- Activa los días de la semana que trabajas
+- Define las horas para cada día activo
+- Opcional: incluye fines de semana y festivos
+
+### 3. Gestión de Festivos
+- Los festivos oficiales se cargan automáticamente
+- Añade festivos personalizados con fecha y nombre
+- Visualiza todos los festivos del mes
+
+### 4. Resultados y Compartir
+- Revisa el balance calculado automáticamente
+- Comparte resultados por WhatsApp, Email o añade al calendario
+- Los datos se actualizan en tiempo real
+
+## 🛠️ Tecnologías Utilizadas
+
+- **HTML5**: Estructura semántica y accesible
+- **CSS3**: Diseño responsive con CSS Grid y Flexbox
+- **JavaScript ES6+**: Funcionalidad moderna y modular
+- **SlimSelect**: Selectores personalizados y accesibles
+- **Service Worker**: Funcionalidad offline y PWA
+- **Web App Manifest**: Instalación como aplicación nativa
+
+## 📱 Compatibilidad
+
+### Navegadores Soportados
+- ✅ Chrome 60+
+- ✅ Firefox 55+
+- ✅ Safari 11+
+- ✅ Edge 79+
+
+### Dispositivos
+- ✅ Móviles (iOS/Android)
+- ✅ Tablets
+- ✅ Desktop
+- ✅ Smart TVs (navegadores web)
+
+## 🔧 Personalización
+
+### Añadir Festivos Personalizados
+```javascript
+// Los festivos se guardan automáticamente en localStorage
+// Formato: { date: "YYYY-MM-DD", name: "Nombre del festivo" }
 ```
-planing_limpio/
+
+### Modificar Horarios
+- Los horarios se pueden cambiar dinámicamente
+- Los cambios se reflejan inmediatamente en el cálculo
+- La configuración se guarda automáticamente
+
+## 🎨 Características de Diseño
+
+### Responsive Design
+- **Mobile First**: Diseño optimizado para móviles
+- **Breakpoints**: 480px, 768px, 1024px, 1200px
+- **Flexible Grid**: Adaptación automática a cualquier pantalla
+
+### Accesibilidad
+- **WCAG 2.1 AA**: Cumple estándares de accesibilidad
+- **Navegación por teclado**: Tab, Enter, Espacio
+- **ARIA labels**: Etiquetas descriptivas para lectores de pantalla
+- **Contraste**: Mínimo 4.5:1 para texto normal
+
+### PWA Features
+- **Offline**: Funciona sin conexión a internet
+- **Instalable**: Se puede instalar como app nativa
+- **Notificaciones**: Soporte para notificaciones push
+- **Sincronización**: Sincronización en segundo plano
+
+## 📊 Estructura del Proyecto
+
+```
+fechahora/
+├── index.html              # Página principal
+├── main.js                 # Lógica de la aplicación
+├── sw.js                   # Service Worker
 ├── css/
-│   └── sheet.css
+│   └── sheet.css          # Estilos principales
 ├── data/
-│   └── holidays.json
-├── favicons/
+│   └── holidays.json      # Festivos oficiales
+├── favicons/              # Iconos para PWA
 │   ├── favicon.svg
-│   ├── favicon.ico
 │   ├── favicon-96x96.png
 │   ├── apple-touch-icon.png
-│   ├── site.webmanifest
-│   ├── web-app-manifest-192x192.png
-│   └── web-app-manifest-512x512.png
-├── index.html
-├── main.js
+│   └── site.webmanifest
 └── README.md
 ```
 
-## Despliegue en GitHub Pages
-1. Sube los cambios a la rama `main` del repositorio.
-2. Ve a **Settings > Pages** en GitHub y selecciona la carpeta `/planing_limpio` como fuente.
-3. Espera unos minutos y accede a la URL que te proporciona GitHub Pages (ejemplo: `https://gusi-ui.github.io/fechahora/planing_limpio/`).
+## 🤝 Contribuir
 
-## Créditos
-- Desarrollado por Gusi-ui y colaboradores.
-- Festivos obtenidos de la web oficial del Ayuntamiento de Mataró.
+Las contribuciones son bienvenidas. Por favor:
 
-## Licencia
-MIT
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+
+## 👨‍💻 Autor
+
+**Gusi** - Desarrollador de la aplicación
+
+Hecho con ❤️ para facilitar la gestión de horas de trabajo.
+
+---
+
+## 🆕 Novedades en la Versión 3.9
+
+### ✨ Nuevas Funcionalidades
+- **Compartir resultados**: WhatsApp, Email y Google Calendar
+- **PWA completa**: Instalable como aplicación nativa
+- **Accesibilidad mejorada**: Navegación por teclado completa
+- **Responsive design**: Mejor adaptación a tablets y landscape
+
+### 🔧 Mejoras Técnicas
+- **Service Worker**: Funcionalidad offline
+- **ARIA attributes**: Mejor soporte para lectores de pantalla
+- **Gestos táctiles**: Optimización para dispositivos móviles
+- **Contraste mejorado**: Soporte para preferencias de accesibilidad
+
+### 🎨 Mejoras de UX
+- **Botones de compartir**: Acceso rápido a funcionalidades sociales
+- **Navegación mejorada**: Skip links y focus management
+- **Feedback visual**: Mejor respuesta a interacciones
+- **Modo oscuro**: Soporte para preferencias del sistema
